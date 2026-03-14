@@ -1,0 +1,36 @@
+app:
+  host: 0.0.0.0
+  port: 7001
+
+robot:
+  name: Robot Arm
+  driver: mock
+  port: /dev/ttyACM0
+  id: qubit_single_arm
+  use_degrees: true
+
+joints:
+  shoulder_pan:
+    min: -150
+    max: 150
+    default: 0
+  shoulder_lift:
+    min: -120
+    max: 90
+    default: -45
+  elbow_flex:
+    min: -10
+    max: 135
+    default: 90
+  wrist_flex:
+    min: -90
+    max: 90
+    default: 0
+  wrist_roll:
+    min: -150
+    max: 150
+    default: 0
+  gripper:
+    min: 0
+    max: 100
+    default: 50
