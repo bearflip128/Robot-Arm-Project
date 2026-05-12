@@ -1,0 +1,8 @@
+{
+  "name": "wave_hello",
+  "poses": [
+    "home",
+    "wave_start",
+    "home"
+  ]
+}

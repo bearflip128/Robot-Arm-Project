@@ -1,0 +1,11 @@
+{
+  "name": "wave_start",
+  "joints": {
+    "shoulder_pan": 22,
+    "shoulder_lift": -18,
+    "elbow_flex": 66,
+    "wrist_flex": 12,
+    "wrist_roll": 42,
+    "gripper": 70
+  }
+}

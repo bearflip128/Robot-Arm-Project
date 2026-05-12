@@ -9,10 +9,16 @@ auth:
 
 robot:
   name: Robot Arm
-  driver: mock
-  port: /dev/ttyACM0
-  id: qubit_single_arm
-  use_degrees: true
+  driver: scservo_single
+  serial_port: COM4
+  baud_rate: 1000000
+  servo_id: 1
+  joint_name: shoulder_pan
+  command_speed: 180
+  command_acc: 30
+  read_delay_s: 0.15
+  servo_min_step: 0
+  servo_max_step: 4095
 
 joints:
   shoulder_pan:

@@ -1,0 +1,72 @@
+app:
+  host: 0.0.0.0
+  port: 7001
+
+auth:
+  username: admin
+  password: change-me-robot
+  secret_key: change-me-session-secret
+
+robot:
+  name: Robot Arm
+  driver: scservo_bus
+  serial_port: COM4
+  baud_rate: 1000000
+  command_speed: 300
+  command_acc: 50
+  read_delay_s: 0.15
+  read_retries: 4
+  write_retries: 3
+  servo_min_step: 0
+  servo_max_step: 4095
+  servo_map:
+    shoulder_pan:
+      servo_id: 1
+      command_speed: 1700
+      command_acc: 240
+    shoulder_lift:
+      servo_id: 2
+      invert: true
+      command_speed: 160
+      command_acc: 24
+    elbow_flex:
+      servo_id: 3
+      invert: true
+      servo_min_step: 742
+      servo_max_step: 2635
+      command_speed: 180
+      command_acc: 28
+    wrist_flex:
+      servo_id: 4
+      command_speed: 180
+      command_acc: 28
+    wrist_roll:
+      servo_id: 5
+    gripper:
+      servo_id: 6
+
+joints:
+  shoulder_pan:
+    min: -150
+    max: 150
+    default: 0
+  shoulder_lift:
+    min: -120
+    max: 90
+    default: -45
+  elbow_flex:
+    min: -10
+    max: 135
+    default: 90
+  wrist_flex:
+    min: -90
+    max: 90
+    default: 0
+  wrist_roll:
+    min: -150
+    max: 150
+    default: 0
+  gripper:
+    min: 0
+    max: 100
+    default: 50

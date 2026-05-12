@@ -1,3 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
+.env
+robot_arm_mcp/.env
+calibration_logs/
+config/backups/
+config/config.yaml
+tmp_cookies.txt

@@ -1,0 +1,9 @@
+{
+  "name": "demo_pickup",
+  "poses": [
+    "home",
+    "pickup",
+    "dropoff",
+    "home"
+  ]
+}

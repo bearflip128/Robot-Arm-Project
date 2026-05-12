@@ -1,0 +1,11 @@
+{
+  "name": "dropoff",
+  "joints": {
+    "shoulder_pan": 34,
+    "shoulder_lift": -28,
+    "elbow_flex": 82,
+    "wrist_flex": 10,
+    "wrist_roll": 0,
+    "gripper": 18
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "pickup",
+  "joints": {
+    "shoulder_pan": -18,
+    "shoulder_lift": -72,
+    "elbow_flex": 118,
+    "wrist_flex": -22,
+    "wrist_roll": 0,
+    "gripper": 100
+  }
+}

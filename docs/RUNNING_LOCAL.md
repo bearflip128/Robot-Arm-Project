@@ -20,4 +20,10 @@ http://127.0.0.1:7001
 ## Notes
 
 - The default config uses `mock` mode, so no hardware is required.
-- Later, switch `robot.driver` in `config/config.example.yaml` to `lerobot_so100` when you have compatible hardware and dependencies.
+- For SO-101-equivalent hardware, prefer the LeRobot-compatible configuration fields in [config.yaml](/C:/Users/natej/OneDrive/Desktop/qubit/config/config.yaml).
+- The live app now uses a unified backend control loop:
+  - UI sliders set desired joint targets
+  - PS4 sends raw controller state to the server
+  - playback updates the same desired target layer
+  - one fixed-rate loop writes the final filtered command frame to hardware
+- Joint bindings, safe ranges, controller mappings, and teleop rates are centralized in [config.yaml](/C:/Users/natej/OneDrive/Desktop/qubit/config/config.yaml).

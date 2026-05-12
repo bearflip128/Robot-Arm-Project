@@ -257,6 +257,24 @@ python scripts/dashboard.py
 
 ---
 
+## control architecture
+
+The single-arm control stack is organized around one hardware writer and one unified target model:
+
+- UI sliders produce absolute joint targets
+- PS4 controller input is sent to the backend as raw controller state
+- playback and recording feed the same desired-joint state layer
+- a fixed-rate backend control loop applies:
+  - joint-limit clamps
+  - controller deadzones
+  - per-joint rate limiting
+  - smoothing / filtered target generation
+- only the hardware adapter sends the final command frame to the motors
+
+Joint mappings, safe limits, startup poses, controller bindings, and teleop tuning live in `config/config.yaml`.
+
+---
+
 ## emotes & LED animations
 
 All emotes live in `/emotes` as JSON files — each describes a 16×16 pixel frame sequence for the LED matrix.
