@@ -13,7 +13,7 @@
 
 ---
 
-<img src="/bearflip128/Robot-Arm-Project/blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
+<img src="https://github.com/bearflip128/Robot-Arm-Project/blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
 
 ---
 
