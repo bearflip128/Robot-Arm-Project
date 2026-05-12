@@ -1,5 +1,7 @@
 <div align="center">
+<img src="https://github.com/bearflip128/Robot-Arm-Project/blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
 
+  
 <h1>◈ &nbsp; Q U B I T &nbsp; ◈</h1>
 
 **dual-arm desk robot · expressive LED eyes · open-source Python brain**
@@ -13,7 +15,7 @@
 
 ---
 
-<img src="https://github.com/bearflip128/Robot-Arm-Project/blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
+
 
 ---
 
