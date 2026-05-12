@@ -13,7 +13,7 @@
 
 ---
 
-<img src="main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
+<img src="blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
 
 ---
 
