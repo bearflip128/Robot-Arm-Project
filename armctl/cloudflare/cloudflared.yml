@@ -1,0 +1,41 @@
+# Cloudflare tunnel config for armctl.
+#
+# This reuses the EXISTING tunnel — same UUID, same credentials, same DNS
+# record — and changes only which local port robot.natewalinder.com points at:
+# 7001 (original stack) -> 7002 (armctl). No `tunnel create`, no `route dns`,
+# and no Cloudflare dashboard changes are needed.
+#
+# The mcp.natewalinder.com rule is carried over unchanged. Dropping it here
+# would take that hostname down whenever this config is the one in use.
+#
+# Run it with:
+#   cloudflared --config <path to this file> tunnel run
+#
+# To roll back to the original stack: stop cloudflared, start the old server on
+# 7001, and run cloudflared again with the repo-root cloudflare/cloudflared.yml,
+# which still points at 7001. That file is deliberately left untouched.
+#
+# Only one cloudflared may run this tunnel at a time — stop the existing one
+# before starting this, or the edge will load-balance between the two configs.
+
+tunnel: 369baba5-12e4-4737-b3ef-d7eb51287e7e
+credentials-file: C:\Users\natej\.cloudflared\369baba5-12e4-4737-b3ef-d7eb51287e7e.json
+
+edge-ip-version: "4"
+retries: 10
+protocol: http2
+
+ingress:
+  - hostname: robot.natewalinder.com
+    service: http://127.0.0.1:7002
+    originRequest:
+      connectTimeout: 10s
+      tcpKeepAlive: 30s
+      keepAliveTimeout: 90s
+  - hostname: mcp.natewalinder.com
+    service: http://127.0.0.1:8000
+    originRequest:
+      connectTimeout: 10s
+      tcpKeepAlive: 30s
+      keepAliveTimeout: 90s
+  - service: http_status:404
