@@ -60,5 +60,5 @@ if ($Public) {
     }
     Write-Host "Starting Cloudflare tunnel ..." -ForegroundColor Cyan
     Start-Process -FilePath "cloudflared" -ArgumentList @("tunnel", "--config", $configPath, "run")
-    Write-Host "Public: see the hostname in cloudflare\coudflared.yml" -ForegroundColor Green
+    Write-Host "Public: see the hostname in cloudflare\cloudflared.yml" -ForegroundColor Green
 }
