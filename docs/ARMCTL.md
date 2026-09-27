@@ -55,10 +55,11 @@ Set credentials with the `ARMCTL_USERNAME`, `ARMCTL_PASSWORD` and
 
 - Every joint's servo range is set with `step_lo` / `step_hi` (plus `invert`)
   in `arm.yaml`. It's measured on the assembled arm, not computed.
-- `wrist_flex` (servo 4) is calibrated to `step_lo: 1777`, `step_hi: 4061`,
-  inverted, over -90..90 deg. That upper limit is only 34 steps below the
-  encoder's 4095 → 0 wrap. Any overshoot past it reads as a position near 0,
-  which shows up as sudden out-of-range values. The elbow had the same problem
-  and was fixed with an encoder homing offset. The wrist will need the same fix.
+- If a joint reports "outside range" or strains against a stop, its
+  `step_lo` / `step_hi` no longer match the servo's real readings (for
+  example after a servo reset or swap). Relax the arm, use the dashboard's
+  Calibrate to sweep the joint by hand from stop to stop, and Save. This
+  happened to `wrist_flex` (servo 4): it read around step 399 while
+  `arm.yaml` still expected 1777–4061.
 - Stall/overload torque cuts have been seen on `elbow_flex`, `shoulder_lift` and
   `shoulder_pan`. If joints drop out, lower their `max_accel` / `max_vel`.
