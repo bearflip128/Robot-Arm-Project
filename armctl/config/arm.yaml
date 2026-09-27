@@ -1,0 +1,161 @@
+# armctl configuration.
+#
+# Calibration (step_lo/step_hi/invert) is carried over unchanged from the
+# original stack, so this runs on the same physical arm without recalibrating.
+
+app:
+  host: 0.0.0.0
+  port: 7002          # 7001 belongs to the original stack; keep them apart
+
+auth:
+  # PLACEHOLDERS ONLY — do not put real credentials here, this file is committed.
+  # Set these in the environment instead; they take precedence over the file:
+  #   $env:ARMCTL_USERNAME = "..."
+  #   $env:ARMCTL_PASSWORD = "..."
+  #   $env:ARMCTL_SECRET_KEY = "..."   # any long random string
+  # The dashboard is exposed publicly through the Cloudflare tunnel and can move
+  # a physical arm, so these defaults are not safe to run with.
+  username: admin
+  password: change-me-robot
+  secret_key: change-me-session-secret
+
+robot:
+  driver: feetech     # feetech | sim
+  serial_port: COM4
+  baud: 1000000
+  control_hz: 100
+  intent_timeout: 0.25   # stick input older than this is treated as released
+  latency_ms: 8          # serial read timeout slack; SDK default of 50 is far too slow
+  goal_speed: 0          # 0 = servo max. The host generates the trajectory,
+  goal_accel: 0          # so the servo must not run a profile of its own.
+
+  # Servo supply. STS3215 ships as 5 V, 7.4 V and 12 V variants, and the EEPROM
+  # voltage limits are family-wide firmware defaults that do NOT tell you which
+  # one you have — check the label on the servo, or the listing you bought.
+  # This arm is the 5 V variant on a Facmogu AL-0540 (5 V 4 A), the part its
+  # servos ship with, so 5 V is full rated voltage and not a derated one.
+  # undervolt_warn sits above the servos' own 4.0 V alarm so the dashboard
+  # warns before the hardware cuts out.
+  nominal_volts: 5.0
+  undervolt_warn: 4.5
+
+# Wired gamepad index map. Verified against this controller with
+# tools/pad_probe.py — L1/R1 measured at buttons 9 and 10, not the 4/5 of the
+# older SDL raw-joystick layout. Wrong indices here are silent: the joint they
+# drive simply never responds while everything else works.
+gamepad:
+  axes:         { left_x: 0, left_y: 1, right_x: 2, right_y: 3 }
+  trigger_axes: { l2: 4, r2: 5 }
+  buttons:      { l1: 9, r1: 10 }
+
+motion:
+  margin_steps: 8
+  max_vel: 120
+  max_accel: 400
+  teleop_vel: 90
+  # lead_limit is the anti-windup budget: how far the commanded setpoint may
+  # run ahead of the last position read back from the servo.
+  #
+  # Size it as max_vel * 0.15 s. That 150 ms covers the servo's own lag under
+  # load plus read staleness — feedback is round-robin, so a given joint's
+  # reading is up to (joint count / control_hz) = 60 ms old. Set it any tighter
+  # and it binds during ordinary fast motion, which makes the setpoint ride the
+  # boundary in a stop-start sawtooth. It exists to catch a genuine stall, not
+  # to shape normal moves.
+  lead_limit: 18
+
+joints:
+  shoulder_pan:
+    label: Base Pan
+    servo_id: 1
+    lo: -150
+    hi: 150
+    home: 0
+    step_lo: 379
+    step_hi: 2726
+    max_vel: 220
+    max_accel: 700
+    teleop_vel: 170
+    lead_limit: 33
+    binding: { kind: trigger_pair, negative: l2, positive: r2, deadzone: 0.06, expo: 1.6 }
+
+  shoulder_lift:
+    label: Shoulder Lift
+    servo_id: 2
+    lo: -120
+    hi: -13.65
+    home: -45
+    step_lo: 729
+    step_hi: 3061
+    max_vel: 90
+    max_accel: 280
+    teleop_vel: 65
+    lead_limit: 14
+    # sign flipped from -1 to 1 at the operator's request: left stick up now
+    # drives the opposite way round on this joint.
+    binding: { kind: axis, axis: left_y, sign: 1, deadzone: 0.12, expo: 1.6 }
+
+  elbow_flex:
+    label: Elbow Flex
+    servo_id: 3
+    # Servo 3 carries a homing offset of 1792 in its OFS register (addr 31).
+    # Its travel straddled the encoder rollover, which made position
+    # ambiguous and every calibration record a bogus full-range span. These
+    # step numbers are only valid WITH that offset in place — if the servo is
+    # ever reset or replaced, reapply it:
+    #   python tools/set_home_offset.py COM4 3 --offset -1792
+    lo: -10
+    hi: 135
+    home: 90
+    step_lo: 856
+    step_hi: 3092
+    invert: true
+    max_vel: 110
+    max_accel: 340
+    teleop_vel: 80
+    lead_limit: 17
+    binding: { kind: axis, axis: right_y, sign: -1, deadzone: 0.12, expo: 1.6 }
+
+  wrist_flex:
+    label: Wrist Flex
+    servo_id: 4
+    lo: -90
+    hi: 90
+    home: 0
+    step_lo: 1777
+    step_hi: 4061
+    invert: true
+    max_vel: 100
+    max_accel: 320
+    teleop_vel: 70
+    lead_limit: 15
+    binding: { kind: axis, axis: right_x, deadzone: 0.12, expo: 1.5 }
+
+  wrist_roll:
+    label: Wrist Roll
+    servo_id: 5
+    lo: -150
+    hi: 150
+    home: 0
+    step_lo: 725
+    step_hi: 2569
+    max_vel: 180
+    max_accel: 560
+    teleop_vel: 130
+    lead_limit: 27
+    binding: { kind: axis, axis: left_x, deadzone: 0.12, expo: 1.5 }
+
+  gripper:
+    label: Gripper
+    servo_id: 6
+    lo: 0
+    hi: 100
+    home: 50
+    step_lo: 3796
+    step_hi: 4070
+    invert: true
+    max_vel: 160
+    max_accel: 500
+    teleop_vel: 120
+    lead_limit: 24
+    binding: { kind: button_pair, negative: l1, positive: r1, deadzone: 0.0, expo: 1.0 }

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>armctl · sign in</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ asset_v }}">
+</head>
+<body>
+<div class="login-wrap">
+  <form class="card login" method="post">
+    <header><h2>armctl · sign in</h2></header>
+    <div class="body">
+      {% if error %}<div class="err">{{ error }}</div>{% endif %}
+      <input type="text" name="username" placeholder="Username" autocomplete="username" autofocus required>
+      <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+      <button class="btn primary" type="submit">Sign in</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

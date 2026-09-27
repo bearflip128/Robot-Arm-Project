@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **armctl is now the official robot arm code and documentation.** See [docs/ARMCTL.md](docs/ARMCTL.md). The code in `app/` and `scripts/robot_control_server.py` is legacy and kept for reference only.
+
 <div align="center">
 <img src="https://github.com/bearflip128/Robot-Arm-Project/blob/main/User%20attachment.png" alt="Qubit Desk Robot" width="100%" />
 This is a custom configuration of the quibit project of SO-100 Robot arms. Fully 3D printed myself and assembled. First version of the codebase was built with ChatGPT models 5.4 to 5.6 Sol but was unable to get a reliable working robot arm. Once transfering project over to Claude Opus 5, the project was able to be completed. 
