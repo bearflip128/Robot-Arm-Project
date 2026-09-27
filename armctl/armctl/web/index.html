@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>armctl</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ asset_v }}">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>armctl</h1>
+    <span id="loopStat">—</span>
+  </div>
+  <div class="pill" id="linkPill"><i class="dot"></i><span>Connecting</span></div>
+  <div class="pill" id="armPill"><i class="dot"></i><span>Disarmed</span></div>
+  <div class="pill" id="voltPill" hidden><i class="dot"></i><span>—</span></div>
+  <button class="estop" id="btnEstop">E-STOP</button>
+</div>
+
+<main>
+  <div class="col">
+    <section class="card">
+      <header>
+        <h2>Joints</h2>
+        <div class="spacer"></div>
+        <span class="hint" id="statusLine"></span>
+      </header>
+      <div id="joints">
+        {% for j in joints %}
+        <div class="joint" data-joint="{{ j.name }}">
+          <div class="joint-head">
+            <span class="name">{{ j.label }}</span>
+            <span class="sid">#{{ j.servo_id }}</span>
+            <span class="fault" data-fault hidden></span>
+            <span class="readout"><b data-value>—</b><span class="lag" data-lag></span></span>
+          </div>
+          <div class="track">
+            <div class="rail"></div>
+            <div class="home" data-home></div>
+            <div class="ghost" data-ghost></div>
+            <input type="range" data-slider
+                   min="{{ j.lo }}" max="{{ j.hi }}" step="0.1" value="{{ j.home }}" disabled>
+          </div>
+          <div class="limits"><span>{{ j.lo }}</span><span>{{ j.hi }}</span></div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="card">
+      <header>
+        <h2>Calibration</h2>
+        <div class="spacer"></div>
+        <span class="hint" id="calStat">not running</span>
+      </header>
+      <div class="body">
+        <div class="row grow">
+          <button class="btn" id="btnCalStart">Start calibration</button>
+          <button class="btn primary" id="btnCalSave" hidden>Save travel</button>
+          <button class="btn" id="btnCalCancel" hidden>Cancel</button>
+        </div>
+        <div id="calTable" style="margin-top:10px"></div>
+        <p class="hint" style="margin:10px 0 0">
+          Cuts torque, then records how far each joint actually moves while you
+          sweep it by hand. Saving rewrites the step ranges in
+          <code>config/arm.yaml</code> (the old file is kept as
+          <code>.bak</code>) and needs a restart to take effect.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <header><h2>Diagnostics</h2></header>
+      <div class="body" id="diag"></div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card">
+      <header><h2>Safety</h2></header>
+      <div class="body">
+        <div class="row grow" style="margin-bottom:8px">
+          <button class="btn primary" id="btnArm">Arm</button>
+          <button class="btn" id="btnDisarm">Disarm</button>
+        </div>
+        <div class="row grow">
+          <button class="btn" id="btnRelax">Relax</button>
+          <button class="btn" id="btnHome">Home</button>
+        </div>
+        <button class="btn danger" id="btnReset" style="width:100%;margin-top:8px" hidden>
+          Clear E-Stop
+        </button>
+        <button class="btn" id="btnRecover" style="width:100%;margin-top:8px" hidden>
+          Recover released joints
+        </button>
+        <p class="hint" style="margin:10px 0 0">
+          Relax cuts torque so you can pose the arm by hand. Arm re-syncs to the
+          real position first, so it never jumps.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <header>
+        <h2>Gamepad</h2>
+        <div class="spacer"></div>
+        <label class="toggle"><input type="checkbox" id="padEnable"> Browser pad</label>
+      </header>
+      <div class="body">
+        <div class="sticks">
+          <div class="stick"><div class="nub" id="nubL"></div><div class="label">L · roll / lift</div></div>
+          <div class="stick"><div class="nub" id="nubR"></div><div class="label">R · flex / elbow</div></div>
+        </div>
+        <div class="triggers">
+          <div class="trig"><div class="bar"><i id="barL2"></i></div><span>L2</span></div>
+          <div class="trig"><div class="bar"><i id="barL1"></i></div><span>L1</span></div>
+          <div class="trig"><div class="bar"><i id="barR1"></i></div><span>R1</span></div>
+          <div class="trig"><div class="bar"><i id="barR2"></i></div><span>R2</span></div>
+        </div>
+        <p class="hint" id="padHint" style="margin:12px 0 0">
+          A pad plugged into the host laptop is read automatically. Tick
+          <em>Browser pad</em> to drive from this device instead — press a
+          button first so the browser exposes it.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <header>
+        <h2>Teach &amp; Repeat</h2>
+        <div class="spacer"></div>
+        <span class="hint" id="recStat">0 frames</span>
+      </header>
+      <div class="body">
+        <div class="row grow">
+          <button class="btn" id="btnRec">Record</button>
+          <button class="btn" id="btnPlay">Play</button>
+        </div>
+        <p class="hint" style="margin:10px 0 0">
+          Recording relaxes the arm and samples where you move it by hand.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <header>
+        <h2>Poses</h2>
+        <div class="spacer"></div>
+        <button class="btn sm" id="btnSavePose">Save current</button>
+      </header>
+      <div class="body">
+        <div class="list" id="poseList"><div class="empty">No poses saved.</div></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="alarm" id="alarm" hidden></div>
+<div class="toast" id="toast"></div>
+
+<script src="{{ url_for('static', filename='app.js') }}?v={{ asset_v }}"></script>
+</body>
+</html>

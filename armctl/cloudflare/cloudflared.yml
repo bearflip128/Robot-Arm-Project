@@ -1,0 +1,24 @@
+# Cloudflare tunnel config for armctl (template).
+#
+# Fill in your own tunnel UUID and credentials path, then run:
+#   cloudflared --config <path to this file> tunnel run
+# or:
+#   .\scripts\start.ps1 -Public
+#
+# Only one cloudflared may run a given tunnel at a time.
+
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: C:\Users\<you>\.cloudflared\REPLACE_WITH_TUNNEL_UUID.json
+
+edge-ip-version: "4"
+retries: 10
+protocol: http2
+
+ingress:
+  - hostname: robot.example.com
+    service: http://127.0.0.1:7002
+    originRequest:
+      connectTimeout: 10s
+      tcpKeepAlive: 30s
+      keepAliveTimeout: 90s
+  - service: http_status:404

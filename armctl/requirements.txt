@@ -1,0 +1,6 @@
+Flask>=3.0,<4.0
+PyYAML>=6.0,<7.0
+waitress>=3.0,<4.0
+ftservo-python-sdk>=2.0,<3.0
+pygame>=2.6,<3.0
+pytest>=8.0,<9.0

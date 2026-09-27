@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+data/
+*.bak
+logs/
+
+# Never commit secrets or machine-local state
+.env
+.env.*
+.venv/
+venv/
+env/
+.claude/
+cloudflare/*.json
+cloudflare/credentials/
+*.pem
