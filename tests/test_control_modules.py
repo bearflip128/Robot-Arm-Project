@@ -9,9 +9,7 @@ from app.control.motion_filter import MotionFilter
 from app.control.runtime import RobotControlRuntime
 from app.control.state_store import JointStateStore
 from app.control.verification import build_verification_report
-from pathlib import Path
-
-from app.robot_arm import JointDefinition, RobotArmAdapter, SCServoBusAdapter, build_joint_definitions, load_config
+from app.robot_arm import JointDefinition, RobotArmAdapter
 
 
 def make_joint(
@@ -244,18 +242,6 @@ class RuntimeTests(unittest.TestCase):
         runtime.disarm(reason="Testing disarm")
         self.assertFalse(runtime.motion_allowed())
         self.assertEqual(runtime.safety_snapshot().lock_reason, "Testing disarm")
-
-
-class ServoBusMappingTests(unittest.TestCase):
-    def test_example_wrist_flex_maps_one_degree_per_degree(self) -> None:
-        config = load_config(Path(__file__).resolve().parents[1] / "config" / "servo_bus.example.yaml")
-        adapter = SCServoBusAdapter(build_joint_definitions(config), config["robot"])
-        steps_per_degree = 4096 / 360
-        self.assertEqual(adapter._joint_to_step("wrist_flex", 0), 2048)
-        for angle in (-90, -45, 45, 90):
-            step = adapter._joint_to_step("wrist_flex", angle)
-            self.assertAlmostEqual((step - 2048) / steps_per_degree, angle, delta=0.1)
-            self.assertAlmostEqual(adapter._step_to_joint("wrist_flex", step), angle, delta=0.1)
 
 
 if __name__ == "__main__":

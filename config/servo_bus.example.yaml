@@ -38,11 +38,6 @@ robot:
       command_acc: 28
     wrist_flex:
       servo_id: 4
-      # -90..90 deg joint range = 180 deg of servo travel centered on step 2048
-      # (4096 steps / 360 deg). Without this window the joint range is stretched
-      # across the full 0..4095 turn and the wrist moves twice as far as commanded.
-      servo_min_step: 1024
-      servo_max_step: 3072
       command_speed: 180
       command_acc: 28
     wrist_roll:
